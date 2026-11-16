@@ -51,10 +51,17 @@ exports.tambahProduk = async (req, res) => {
         });
     }
 
-    // Jika ada file yang diupload, simpan path relatifnya (misal: /uploads/produk-123.png)
+    // Jika ada file yang diupload (mendukung memory buffer di Vercel dan file disk di lokal)
     let gambarPath = null;
     if (req.file) {
-        gambarPath = `/uploads/${req.file.filename}`;
+        if (req.file.buffer) {
+            // Serverless Vercel: simpan sebagai Data URI Base64
+            const base64 = req.file.buffer.toString("base64");
+            gambarPath = `data:${req.file.mimetype};base64,${base64}`;
+        } else if (req.file.filename) {
+            // Lokal disk
+            gambarPath = `/uploads/${req.file.filename}`;
+        }
     } else if (req.body.gambar) {
         gambarPath = req.body.gambar;
     }
@@ -119,20 +126,27 @@ exports.updateProduk = async (req, res) => {
 
         // Jika user mengupload gambar baru
         if (req.file) {
-            gambarPath = `/uploads/${req.file.filename}`;
+            if (req.file.buffer) {
+                // Serverless Vercel: simpan sebagai Data URI Base64
+                const base64 = req.file.buffer.toString("base64");
+                gambarPath = `data:${req.file.mimetype};base64,${base64}`;
+            } else if (req.file.filename) {
+                // Lokal disk
+                gambarPath = `/uploads/${req.file.filename}`;
 
-            // Hapus file fisik gambar lama dari disk jika berada di /uploads/ (kecuali default asset)
-            if (
-                oldRows[0]?.gambar &&
-                oldRows[0].gambar.startsWith("/uploads/") &&
-                !oldRows[0].gambar.includes("default-gabin")
-            ) {
-                const oldFilePath = path.join(__dirname, "../../public", oldRows[0].gambar);
-                if (fs.existsSync(oldFilePath)) {
-                    try {
-                        fs.unlinkSync(oldFilePath);
-                    } catch (e) {
-                        // Abaikan jika gagal hapus file lama
+                // Hapus file fisik gambar lama dari disk jika berada di /uploads/ (kecuali default asset)
+                if (
+                    oldRows[0]?.gambar &&
+                    oldRows[0].gambar.startsWith("/uploads/") &&
+                    !oldRows[0].gambar.includes("default-gabin")
+                ) {
+                    const oldFilePath = path.join(__dirname, "../../public", oldRows[0].gambar);
+                    if (fs.existsSync(oldFilePath)) {
+                        try {
+                            fs.unlinkSync(oldFilePath);
+                        } catch (e) {
+                            // Abaikan jika gagal hapus file lama
+                        }
                     }
                 }
             }

@@ -1,26 +1,32 @@
-// middleware/uploadMiddleware.js — Konfigurasi Multer untuk penyimpanan gambar produk di storage publik
+// middleware/uploadMiddleware.js — Konfigurasi Multer untuk penyimpanan gambar produk
+// Mendukung penyimpanan disk lokal maupun memory serverless (Vercel)
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// Pastikan direktori backend/public/uploads selalu tersedia
-const uploadDir = path.join(__dirname, "../../public/uploads");
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+const isServerless = Boolean(process.env.VERCEL);
 
-// Konfigurasi penyimpanan file ke disk
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        // Buat nama file unik: produk-[timestamp]-[random].[ekstensi]
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        const ext = path.extname(file.originalname).toLowerCase();
-        cb(null, `produk-${uniqueSuffix}${ext}`);
-    },
-});
+let storage;
+if (isServerless) {
+    // Di Vercel Serverless: simpan file ke memory buffer (disimpan ke database sebagai Data URI)
+    storage = multer.memoryStorage();
+} else {
+    // Di lokal: simpan file fisik ke backend/public/uploads
+    const uploadDir = path.join(__dirname, "../../public/uploads");
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, uploadDir);
+        },
+        filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+            const ext = path.extname(file.originalname).toLowerCase();
+            cb(null, `produk-${uniqueSuffix}${ext}`);
+        },
+    });
+}
 
 // Filter format file: hanya menerima gambar
 const fileFilter = (req, file, cb) => {

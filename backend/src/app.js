@@ -50,8 +50,13 @@ app.use("/api/produk", produkRoute);
 app.use("/api/kategori", kategoriRoute);
 app.use("/api/users", userRoute);
 
-// Jalankan server
-app.listen(PORT, () => {
-    console.log(`Server Ninetasy POS berjalan di http://localhost:${PORT}`);
-    console.log(`Storage gambar publik siap di http://localhost:${PORT}/uploads`);
-});
+// Jalankan server jika dijalankan langsung di lokal / VPS (bukan serverless Vercel)
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server Ninetasy POS berjalan di http://localhost:${PORT}`);
+        console.log(`Storage gambar publik siap di http://localhost:${PORT}/uploads`);
+    });
+}
+
+// Ekspor instance express untuk Vercel Serverless
+module.exports = app;
