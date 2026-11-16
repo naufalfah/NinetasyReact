@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+@import '@fontsource/poppins/600.css';
+@import '@fontsource/poppins/700.css';
+@import '@fontsource/poppins/800.css';
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Animasi transisi halus saat halaman baru muncul / navigasi */
+@keyframes pageEnter {
+    0% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-page-enter {
+    animation: pageEnter 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
