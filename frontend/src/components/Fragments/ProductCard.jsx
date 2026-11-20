@@ -1,7 +1,7 @@
 // ProductCard.jsx — Grid kartu produk dengan filter pencarian & kategori
 // Mendukung data dinamis dari API backend (/api/produk) dengan fallback lokal
 
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import initialProduks from "../../data/produk";
 import Card from "../Elements/Card";
 import api from "../../api";
@@ -13,27 +13,36 @@ export default function ProductCard({
     onCardClick,
     refreshTrigger,
 }) {
-    // State produk (default dari props data atau file lokal)
-    const [products, setProducts] = useState(data || initialProduks);
+    // Tunggu data backend pada render pertama agar produk contoh tidak sempat tampil.
+    const hasProvidedData = data !== undefined && data !== null;
+    const [apiProducts, setApiProducts] = useState([]);
+    const [loading, setLoading] = useState(!hasProvidedData);
+    const products = hasProvidedData ? data : apiProducts;
 
     // Ambil data produk live dari backend jika tersedia
     useEffect(() => {
-        if (data) {
-            setProducts(data);
-            return;
-        }
+        if (hasProvidedData) return;
+
+        let isActive = true;
 
         api.get("/api/produk")
             .then((res) => {
-                if (res.data?.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
-                    setProducts(res.data.data);
+                if (isActive && res.data?.success && Array.isArray(res.data.data)) {
+                    setApiProducts(res.data.data);
                 }
             })
             .catch(() => {
                 // Fallback ke data lokal jika backend belum berjalan
-                setProducts(initialProduks);
+                if (isActive) setApiProducts(initialProduks);
+            })
+            .finally(() => {
+                if (isActive) setLoading(false);
             });
-    }, [data, refreshTrigger]);
+
+        return () => {
+            isActive = false;
+        };
+    }, [hasProvidedData, refreshTrigger]);
 
     // Filter produk berdasarkan keyword dan kategori
     const filtered = useMemo(() => {
@@ -52,7 +61,11 @@ export default function ProductCard({
 
     return (
         <div className="@container">
-            {filtered.length > 0 ? (
+            {(!hasProvidedData && loading) ? (
+                <div className="text-center py-16">
+                    <p className="text-gray-400 text-sm">Memuat produk...</p>
+                </div>
+            ) : filtered.length > 0 ? (
                 <div className="grid grid-cols-1 @md:grid-cols-2 @xl:grid-cols-3 gap-4 sm:gap-5">
                     {filtered.map((produk, index) => (
                         <Card
