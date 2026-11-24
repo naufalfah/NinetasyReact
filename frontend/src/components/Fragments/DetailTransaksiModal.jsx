@@ -177,7 +177,9 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                     {loading ? (
                         <div className="py-12 flex flex-col items-center justify-center text-gray-400 gap-2">
                             <div className="w-6 h-6 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
-                            <span className="text-xs">Memuat detail transaksi...</span>
+                            <span className="text-xs">
+                                Memuat detail transaksi...
+                            </span>
                         </div>
                     ) : !detail ? (
                         <div className="py-8 text-center text-xs text-gray-400">
@@ -188,11 +190,24 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                         <>
                             {/* Status Sukses */}
                             <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-2xl p-3.5 text-emerald-800">
-                                <CheckCircle2 size={18} className="text-emerald-600 flex-shrink-0" />
+                                <CheckCircle2
+                                    size={18}
+                                    className="text-emerald-600 flex-shrink-0"
+                                />
                                 <div className="text-xs">
-                                    <span className="font-bold">Transaksi Selesai</span>
+                                    <span className="font-bold">
+                                        Transaksi Selesai
+                                    </span>
                                     <p className="text-[11px] text-emerald-600">
-                                        {formatDateTime(detail.created_at || detail.tanggal_transaksi)} • {formatTime(detail.created_at || detail.tanggal_transaksi)}
+                                        {formatDateTime(
+                                            detail.created_at ||
+                                                detail.tanggal_transaksi,
+                                        )}{" "}
+                                        •{" "}
+                                        {formatTime(
+                                            detail.created_at ||
+                                                detail.tanggal_transaksi,
+                                        )}
                                     </p>
                                 </div>
                             </div>
@@ -200,12 +215,20 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                             {/* Info Kasir & Pembayaran */}
                             <div className="grid grid-cols-2 gap-2 text-xs bg-white border border-gray-100 p-3.5 rounded-2xl shadow-2xs">
                                 <div>
-                                    <span className="text-gray-400 block text-[11px]">Kasir</span>
-                                    <span className="font-bold text-gray-800">{kasirName}</span>
+                                    <span className="text-gray-400 block text-[11px]">
+                                        Kasir
+                                    </span>
+                                    <span className="font-bold text-gray-800">
+                                        {kasirName}
+                                    </span>
                                 </div>
                                 <div>
-                                    <span className="text-gray-400 block text-[11px]">Metode Bayar</span>
-                                    <span className="font-bold text-gray-800">Tunai (Cash)</span>
+                                    <span className="text-gray-400 block text-[11px]">
+                                        Metode Bayar
+                                    </span>
+                                    <span className="font-bold text-gray-800">
+                                        Tunai (Cash)
+                                    </span>
                                 </div>
                             </div>
 
@@ -214,7 +237,12 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                                 <div className="flex items-center justify-between text-xs font-bold text-gray-700 px-1">
                                     <span>Menu yang Dipesan</span>
                                     <span className="text-gray-400 font-medium">
-                                        {detail.items?.reduce((acc, curr) => acc + Number(curr.qty || 1), 0)} Item
+                                        {detail.items?.reduce(
+                                            (acc, curr) =>
+                                                acc + Number(curr.qty || 1),
+                                            0,
+                                        )}{" "}
+                                        Item
                                     </span>
                                 </div>
 
@@ -228,11 +256,24 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-11 h-11 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                                                         <img
-                                                            src={getImageUrl(item.gambar) || defaultImage}
-                                                            alt={item.nama_produk}
+                                                            src={
+                                                                getImageUrl(
+                                                                    item.gambar,
+                                                                ) ||
+                                                                defaultImage
+                                                            }
+                                                            alt={
+                                                                item.nama_produk
+                                                            }
                                                             onError={(e) => {
-                                                                if (e.currentTarget.src !== defaultImage) {
-                                                                    e.currentTarget.src = defaultImage;
+                                                                if (
+                                                                    e
+                                                                        .currentTarget
+                                                                        .src !==
+                                                                    defaultImage
+                                                                ) {
+                                                                    e.currentTarget.src =
+                                                                        defaultImage;
                                                                 }
                                                             }}
                                                             className="w-full h-full object-cover"
@@ -244,13 +285,18 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                                                             {item.nama_produk}
                                                         </p>
                                                         <p className="text-[11px] text-gray-400 mt-0.5">
-                                                            {item.qty} × {formatRupiah(item.harga)}
+                                                            {item.qty} ×{" "}
+                                                            {formatRupiah(
+                                                                item.harga,
+                                                            )}
                                                         </p>
                                                     </div>
                                                 </div>
 
                                                 <p className="text-xs font-extrabold text-gray-900">
-                                                    {formatRupiah(item.subtotal)}
+                                                    {formatRupiah(
+                                                        item.subtotal,
+                                                    )}
                                                 </p>
                                             </div>
                                         ))
@@ -266,11 +312,15 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                             <div className="bg-white border border-gray-100 rounded-2xl p-4 text-xs space-y-2.5 shadow-2xs">
                                 <div className="flex justify-between text-gray-600">
                                     <span>Total Belanja</span>
-                                    <span className="font-bold text-gray-900">{formatRupiah(detail.total_harga)}</span>
+                                    <span className="font-bold text-gray-900">
+                                        {formatRupiah(detail.total_harga)}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between text-gray-600">
                                     <span>Uang Diterima</span>
-                                    <span className="font-semibold text-gray-800">{formatRupiah(detail.uang_bayar)}</span>
+                                    <span className="font-semibold text-gray-800">
+                                        {formatRupiah(detail.uang_bayar)}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between items-center pt-2 border-t border-gray-100 text-emerald-600 font-bold">
                                     <span>Uang Kembalian</span>
@@ -279,7 +329,9 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                                             Uang Pas
                                         </span>
                                     ) : (
-                                        <span>{formatRupiah(detail.kembalian)}</span>
+                                        <span>
+                                            {formatRupiah(detail.kembalian)}
+                                        </span>
                                     )}
                                 </div>
                             </div>
@@ -289,22 +341,36 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                         <div className="py-2">
                             <div className={`receipt-paper size-${printSize}`}>
                                 <div className="receipt-center">
-                                    <h2 className="receipt-bold tracking-wider m-0">NINETASY</h2>
-                                    <p className="receipt-bold mt-0.5">The Fairy Pantry</p>
-                                    <p className="text-gray-600">Jl. Raya Pulorejo, Kec. Prajurit Kulon, Kota. Mojokerto</p>
-                                    <p className="text-gray-600">Telp: 0821-4363-5239</p>
+                                    <h2 className="receipt-bold tracking-wider m-0">
+                                        NINETASY
+                                    </h2>
+                                    <p className="receipt-bold mt-0.5">
+                                        The Fairy Pantry
+                                    </p>
+                                    <p className="text-gray-600">
+                                        Jl. Raya Pulorejo, Kec. Prajurit Kulon,
+                                        Kota. Mojokerto
+                                    </p>
+                                    <p className="text-gray-600">
+                                        Telp: 0821-4363-5239
+                                    </p>
                                 </div>
 
                                 <div className="receipt-line"></div>
 
                                 <div className="receipt-row">
                                     <span>No. Nota:</span>
-                                    <span className="receipt-bold">#{String(transaksiId).padStart(4, "0")}</span>
+                                    <span className="receipt-bold">
+                                        #{String(transaksiId).padStart(4, "0")}
+                                    </span>
                                 </div>
                                 <div className="receipt-row">
                                     <span>Tanggal:</span>
                                     <span>
-                                        {new Date(detail.created_at || detail.tanggal_transaksi).toLocaleString("id-ID", {
+                                        {new Date(
+                                            detail.created_at ||
+                                                detail.tanggal_transaksi,
+                                        ).toLocaleString("id-ID", {
                                             day: "2-digit",
                                             month: "2-digit",
                                             year: "numeric",
@@ -324,16 +390,21 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
 
                                 <div className="receipt-line"></div>
 
-                                <p className="receipt-bold mb-1.5">RINCIAN PESANAN:</p>
+                                <p className="receipt-bold mb-1.5">
+                                    RINCIAN PESANAN:
+                                </p>
 
                                 {detail.items?.map((item, index) => (
                                     <div key={index} className="mb-2">
                                         <div className="receipt-row receipt-bold">
                                             <span>{item.nama_produk}</span>
-                                            <span>{formatRupiah(item.subtotal)}</span>
+                                            <span>
+                                                {formatRupiah(item.subtotal)}
+                                            </span>
                                         </div>
                                         <div className="text-[0.85em] text-gray-600">
-                                            {item.qty} × {formatRupiah(item.harga)}
+                                            {item.qty} ×{" "}
+                                            {formatRupiah(item.harga)}
                                         </div>
                                     </div>
                                 ))}
@@ -343,21 +414,38 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                                 <div className="receipt-row">
                                     <span>Total Item:</span>
                                     <span>
-                                        {detail.items?.reduce((acc, curr) => acc + Number(curr.qty || 1), 0)} pcs
+                                        {detail.items?.reduce(
+                                            (acc, curr) =>
+                                                acc + Number(curr.qty || 1),
+                                            0,
+                                        )}{" "}
+                                        pcs
                                     </span>
                                 </div>
-                                <div className="receipt-row receipt-bold" style={{ fontSize: "1.15em", marginTop: "3px" }}>
+                                <div
+                                    className="receipt-row receipt-bold"
+                                    style={{
+                                        fontSize: "1.15em",
+                                        marginTop: "3px",
+                                    }}
+                                >
                                     <span>TOTAL:</span>
-                                    <span>{formatRupiah(detail.total_harga)}</span>
+                                    <span>
+                                        {formatRupiah(detail.total_harga)}
+                                    </span>
                                 </div>
                                 <div className="receipt-row">
                                     <span>TUNAI:</span>
-                                    <span>{formatRupiah(detail.uang_bayar)}</span>
+                                    <span>
+                                        {formatRupiah(detail.uang_bayar)}
+                                    </span>
                                 </div>
                                 <div className="receipt-row receipt-bold">
                                     <span>KEMBALI:</span>
                                     <span>
-                                        {Number(detail.kembalian) === 0 ? "UANG PAS" : formatRupiah(detail.kembalian)}
+                                        {Number(detail.kembalian) === 0
+                                            ? "UANG PAS"
+                                            : formatRupiah(detail.kembalian)}
                                     </span>
                                 </div>
 
@@ -367,9 +455,12 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                                     <p className="receipt-bold">TERIMA KASIH</p>
                                     <p>ATAS KUNJUNGAN ANDA</p>
                                     <p className="text-[0.82em] text-gray-500 mt-1">
-                                        Barang yang sudah dibeli tidak dapat ditukar
+                                        Barang yang sudah dibeli tidak dapat
+                                        ditukar
                                     </p>
-                                    <p className="text-[0.82em] text-gray-500">www.ninetasy.com</p>
+                                    <p className="text-[0.82em] text-gray-500">
+                                        www.ninetasy.com
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -381,21 +472,29 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                     <div className={`receipt-print size-${printSize}`}>
                         <div className="receipt-center">
                             <h2>NINETASY</h2>
-                            <p className="receipt-bold">COFFEE, DESSERT & STORE</p>
-                            <p>Jl. Raya Rungkut No. 99, Surabaya</p>
-                            <p>Telp: 0812-3456-7890</p>
+                            <p className="receipt-bold">The Fairy Pantry</p>
+                            <p>
+                                Jl. Raya Pulorejo, Kec. Prajurit Kulon, Kota.
+                                Mojokerto
+                            </p>
+                            <p>Telp: 0821-4363-5239</p>
                         </div>
 
                         <div className="receipt-line"></div>
 
                         <div className="receipt-row">
                             <span>No. Nota:</span>
-                            <span className="receipt-bold">#{String(transaksiId).padStart(4, "0")}</span>
+                            <span className="receipt-bold">
+                                #{String(transaksiId).padStart(4, "0")}
+                            </span>
                         </div>
                         <div className="receipt-row">
                             <span>Tanggal:</span>
                             <span>
-                                {new Date(detail.created_at || detail.tanggal_transaksi).toLocaleString("id-ID", {
+                                {new Date(
+                                    detail.created_at ||
+                                        detail.tanggal_transaksi,
+                                ).toLocaleString("id-ID", {
                                     day: "2-digit",
                                     month: "2-digit",
                                     year: "numeric",
@@ -415,7 +514,10 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
 
                         <div className="receipt-line"></div>
 
-                        <div className="receipt-bold" style={{ marginBottom: "5px" }}>
+                        <div
+                            className="receipt-bold"
+                            style={{ marginBottom: "5px" }}
+                        >
                             RINCIAN PESANAN:
                         </div>
 
@@ -425,7 +527,12 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                                     <span>{item.nama_produk}</span>
                                     <span>{formatRupiah(item.subtotal)}</span>
                                 </div>
-                                <div style={{ color: "#333", fontSize: "0.85em" }}>
+                                <div
+                                    style={{
+                                        color: "#333",
+                                        fontSize: "0.85em",
+                                    }}
+                                >
                                     {item.qty} × {formatRupiah(item.harga)}
                                 </div>
                             </div>
@@ -436,10 +543,17 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                         <div className="receipt-row">
                             <span>Total Item:</span>
                             <span>
-                                {detail.items?.reduce((acc, curr) => acc + Number(curr.qty || 1), 0)} pcs
+                                {detail.items?.reduce(
+                                    (acc, curr) => acc + Number(curr.qty || 1),
+                                    0,
+                                )}{" "}
+                                pcs
                             </span>
                         </div>
-                        <div className="receipt-row receipt-bold" style={{ fontSize: "1.2em", marginTop: "4px" }}>
+                        <div
+                            className="receipt-row receipt-bold"
+                            style={{ fontSize: "1.2em", marginTop: "4px" }}
+                        >
                             <span>TOTAL:</span>
                             <span>{formatRupiah(detail.total_harga)}</span>
                         </div>
@@ -450,19 +564,32 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                         <div className="receipt-row receipt-bold">
                             <span>KEMBALI:</span>
                             <span>
-                                {Number(detail.kembalian) === 0 ? "UANG PAS" : formatRupiah(detail.kembalian)}
+                                {Number(detail.kembalian) === 0
+                                    ? "UANG PAS"
+                                    : formatRupiah(detail.kembalian)}
                             </span>
                         </div>
 
                         <div className="receipt-line"></div>
 
-                        <div className="receipt-center" style={{ marginTop: "8px" }}>
+                        <div
+                            className="receipt-center"
+                            style={{ marginTop: "8px" }}
+                        >
                             <p className="receipt-bold">TERIMA KASIH</p>
                             <p>ATAS KUNJUNGAN ANDA</p>
-                            <p style={{ fontSize: "0.82em", marginTop: "3px", color: "#444" }}>
+                            <p
+                                style={{
+                                    fontSize: "0.82em",
+                                    marginTop: "3px",
+                                    color: "#444",
+                                }}
+                            >
                                 Barang yang sudah dibeli tidak dapat ditukar
                             </p>
-                            <p style={{ fontSize: "0.82em", color: "#666" }}>www.ninetasy.com</p>
+                            <p style={{ fontSize: "0.82em", color: "#666" }}>
+                                www.ninetasy.com
+                            </p>
                         </div>
                     </div>
                 )}
@@ -473,8 +600,8 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                         {printSize === "a4"
                             ? "Format: Kertas A4 / PDF (Besar & Jelas)"
                             : printSize === "80mm"
-                            ? "Format: Thermal 80mm (Standar Kasir POS)"
-                            : "Format: Thermal 58mm (Kecil)"}
+                              ? "Format: Thermal 80mm (Standar Kasir POS)"
+                              : "Format: Thermal 58mm (Kecil)"}
                     </span>
                     <div className="flex items-center gap-2 ml-auto">
                         <button
