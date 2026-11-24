@@ -1,4 +1,4 @@
-/* receipt.css — Styling untuk Cetak Struk Thermal POS Ninetasy */
+/* receipt.css — Styling untuk Cetak Struk Thermal POS & PDF Ninetasy */
 
 /* Tampilan Normal di Layar (disembunyikan saat di luar print) */
 .receipt-print {
@@ -10,15 +10,27 @@
     background: #ffffff;
     color: #111111;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 11px;
     line-height: 1.45;
-    padding: 20px 18px;
+    padding: 22px 20px;
     border-radius: 16px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
     border: 1px dashed #d1d5db;
-    max-width: 330px;
     margin: 0 auto;
     position: relative;
+    transition: all 0.2s ease;
+}
+
+.receipt-paper.size-58mm {
+    max-width: 290px;
+    font-size: 11.5px;
+}
+.receipt-paper.size-80mm {
+    max-width: 380px;
+    font-size: 13.5px;
+}
+.receipt-paper.size-a4 {
+    max-width: 460px;
+    font-size: 15px;
 }
 
 .receipt-paper .receipt-line,
@@ -32,7 +44,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 4px;
+    gap: 6px;
 }
 
 .receipt-paper .receipt-bold,
@@ -53,8 +65,8 @@
 /* Pengaturan Khusus Mode Print (@media print) */
 @media print {
     @page {
-        size: 58mm auto;
-        margin: 0mm;
+        size: auto;
+        margin: 5mm;
     }
 
     /* Sembunyikan seluruh UI website saat cetak */
@@ -79,42 +91,76 @@
 
     .receipt-print {
         display: block !important;
-        position: fixed !important;
+        position: absolute !important;
         top: 0 !important;
         left: 0 !important;
-        width: 58mm !important;
-        max-width: 58mm !important;
-        padding: 4mm 3mm !important;
+        right: 0 !important;
+        margin: 0 auto !important;
         background: #ffffff !important;
         color: #000000 !important;
         font-family: 'Courier New', Courier, monospace !important;
-        font-size: 10px !important;
-        line-height: 1.35 !important;
         box-sizing: border-box !important;
         z-index: 999999 !important;
     }
 
-    .receipt-print h2 {
-        text-align: center;
-        font-size: 16px;
-        font-weight: 900;
-        margin: 0 0 2px 0;
-        letter-spacing: 1px;
+    /* Ukuran 58mm (Thermal Kecil) */
+    .receipt-print.size-58mm {
+        width: 58mm !important;
+        max-width: 58mm !important;
+        padding: 4mm 2.5mm !important;
+        font-size: 11.5px !important;
+        line-height: 1.35 !important;
+    }
+    .receipt-print.size-58mm h2 {
+        font-size: 17px !important;
+        font-weight: 900 !important;
+        margin: 0 0 2px 0 !important;
+    }
+
+    /* Ukuran 80mm (Standar POS Kasir) */
+    .receipt-print.size-80mm {
+        width: 80mm !important;
+        max-width: 80mm !important;
+        padding: 6mm 4mm !important;
+        font-size: 13.5px !important;
+        line-height: 1.4 !important;
+    }
+    .receipt-print.size-80mm h2 {
+        font-size: 22px !important;
+        font-weight: 900 !important;
+        margin: 0 0 3px 0 !important;
+    }
+
+    /* Ukuran A4 / PDF (Besar & Jelas di Kertas Biasa / PDF) */
+    .receipt-print.size-a4 {
+        width: 140mm !important;
+        max-width: 140mm !important;
+        padding: 10mm 8mm !important;
+        font-size: 15.5px !important;
+        line-height: 1.5 !important;
+        border: 1px dashed #333333 !important;
+        border-radius: 8px !important;
+        margin-top: 8mm !important;
+    }
+    .receipt-print.size-a4 h2 {
+        font-size: 26px !important;
+        font-weight: 900 !important;
+        margin: 0 0 4px 0 !important;
     }
 
     .receipt-print p {
-        margin: 1.5px 0;
+        margin: 2px 0 !important;
     }
 
     .receipt-print .receipt-line {
         border-top: 1px dashed #000000 !important;
-        margin: 6px 0 !important;
+        margin: 8px 0 !important;
     }
 
     .receipt-print .receipt-row {
         display: flex !important;
         justify-content: space-between !important;
-        gap: 4px !important;
+        gap: 6px !important;
     }
 
     .receipt-print .receipt-bold {

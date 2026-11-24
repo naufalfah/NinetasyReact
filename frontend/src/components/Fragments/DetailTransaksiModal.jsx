@@ -1,7 +1,7 @@
-// DetailTransaksiModal.jsx — Modal rincian nota transaksi & cetak struk thermal kasir
+// DetailTransaksiModal.jsx — Modal rincian nota transaksi & cetak struk thermal kasir / PDF
 import React, { useState, useEffect } from "react";
 import api, { getImageUrl } from "../../api";
-import { X, Receipt, Calendar, ShoppingBag, CheckCircle2, Printer, FileText } from "lucide-react";
+import { X, Receipt, ShoppingBag, CheckCircle2, Printer, FileText } from "lucide-react";
 import defaultImage from "../../assets/gabin-ice-cream.png";
 import "../../styles/receipt.css";
 
@@ -9,6 +9,7 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
     const [detail, setDetail] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("menu"); // "menu" | "struk"
+    const [printSize, setPrintSize] = useState("80mm"); // "58mm" | "80mm" | "a4"
 
     // Ambil nama kasir yang sedang login
     const savedUser = localStorage.getItem("user");
@@ -101,80 +102,128 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                 </div>
 
                 {/* Tab Switcher: Detail Menu vs Preview Struk Thermal */}
-                <div className="flex items-center justify-center gap-2 px-6 pt-3 pb-1 border-b border-gray-100 bg-white">
-                    <button
-                        type="button"
-                        onClick={() => setActiveTab("menu")}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                            activeTab === "menu"
-                                ? "bg-[#3D3D3D] text-white shadow-xs"
-                                : "text-gray-500 hover:text-black hover:bg-gray-100"
-                        }`}
-                    >
-                        <ShoppingBag size={14} />
-                        <span>Rincian Menu</span>
-                    </button>
+                <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-gray-100 bg-white">
+                    <div className="flex items-center gap-1.5">
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab("menu")}
+                            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                activeTab === "menu"
+                                    ? "bg-[#3D3D3D] text-white shadow-xs"
+                                    : "text-gray-500 hover:text-black hover:bg-gray-100"
+                            }`}
+                        >
+                            <ShoppingBag size={14} />
+                            <span>Rincian Menu</span>
+                        </button>
 
-                    <button
-                        type="button"
-                        onClick={() => setActiveTab("struk")}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                            activeTab === "struk"
-                                ? "bg-[#3D3D3D] text-white shadow-xs"
-                                : "text-gray-500 hover:text-black hover:bg-gray-100"
-                        }`}
-                    >
-                        <FileText size={14} />
-                        <span>Preview Struk Kasir</span>
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab("struk")}
+                            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                activeTab === "struk"
+                                    ? "bg-[#3D3D3D] text-white shadow-xs"
+                                    : "text-gray-500 hover:text-black hover:bg-gray-100"
+                            }`}
+                        >
+                            <FileText size={14} />
+                            <span>Preview Struk</span>
+                        </button>
+                    </div>
+
+                    {/* Pengatur Ukuran Kertas */}
+                    <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl">
+                        <button
+                            type="button"
+                            onClick={() => setPrintSize("58mm")}
+                            title="Format printer thermal kecil 58mm"
+                            className={`px-2 py-1 text-[10px] font-bold rounded-lg transition-all cursor-pointer ${
+                                printSize === "58mm"
+                                    ? "bg-[#3D3D3D] text-white shadow-xs"
+                                    : "text-gray-500 hover:text-black"
+                            }`}
+                        >
+                            58mm
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setPrintSize("80mm")}
+                            title="Format printer kasir standar 80mm"
+                            className={`px-2 py-1 text-[10px] font-bold rounded-lg transition-all cursor-pointer ${
+                                printSize === "80mm"
+                                    ? "bg-[#3D3D3D] text-white shadow-xs"
+                                    : "text-gray-500 hover:text-black"
+                            }`}
+                        >
+                            80mm
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setPrintSize("a4")}
+                            title="Format besar untuk kertas biasa / Microsoft Print to PDF"
+                            className={`px-2 py-1 text-[10px] font-bold rounded-lg transition-all cursor-pointer ${
+                                printSize === "a4"
+                                    ? "bg-[#3D3D3D] text-white shadow-xs"
+                                    : "text-gray-500 hover:text-black"
+                            }`}
+                        >
+                            A4 / PDF
+                        </button>
+                    </div>
                 </div>
 
-                {/* Content Modal */}
-                <div className="p-6 overflow-y-auto flex-1 space-y-5 bg-[#FAF9F7]/40">
+                {/* Body Modal */}
+                <div className="p-6 overflow-y-auto space-y-4 flex-1 bg-[#FAF9F7]">
                     {loading ? (
-                        <div className="py-16 text-center text-xs text-gray-400 animate-pulse">
-                            Memuat rincian transaksi...
+                        <div className="py-12 flex flex-col items-center justify-center text-gray-400 gap-2">
+                            <div className="w-6 h-6 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                            <span className="text-xs">Memuat detail transaksi...</span>
                         </div>
                     ) : !detail ? (
-                        <div className="py-16 text-center text-xs text-red-500">
+                        <div className="py-8 text-center text-xs text-gray-400">
                             Data transaksi tidak ditemukan.
                         </div>
                     ) : activeTab === "menu" ? (
                         /* TAB 1: Rincian Menu Modern */
                         <>
-                            {/* Info Tanggal & Status */}
-                            <div className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between text-xs shadow-2xs">
-                                <div className="flex items-center gap-2.5 text-gray-600">
-                                    <Calendar size={15} className="text-gray-400" />
-                                    <div>
-                                        <p className="font-semibold text-gray-900">
-                                            {formatDateTime(detail.tanggal_transaksi || detail.created_at)}
-                                        </p>
-                                        <p className="text-[11px] text-gray-400">
-                                            Waktu: {formatTime(detail.created_at || detail.tanggal_transaksi)} WIB
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 font-bold px-3 py-1 rounded-full text-[11px]">
-                                    <CheckCircle2 size={13} />
-                                    <span>Lunas (Cash)</span>
+                            {/* Status Sukses */}
+                            <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-2xl p-3.5 text-emerald-800">
+                                <CheckCircle2 size={18} className="text-emerald-600 flex-shrink-0" />
+                                <div className="text-xs">
+                                    <span className="font-bold">Transaksi Selesai</span>
+                                    <p className="text-[11px] text-emerald-600">
+                                        {formatDateTime(detail.created_at || detail.tanggal_transaksi)} • {formatTime(detail.created_at || detail.tanggal_transaksi)}
+                                    </p>
                                 </div>
                             </div>
 
-                            {/* Daftar Barang yang Dibeli */}
-                            <div>
-                                <div className="flex items-center gap-2 mb-3 text-xs font-bold text-gray-800">
-                                    <ShoppingBag size={15} className="text-gray-500" />
-                                    <span>Barang yang Dibeli ({detail.items?.length || 0} Menu)</span>
+                            {/* Info Kasir & Pembayaran */}
+                            <div className="grid grid-cols-2 gap-2 text-xs bg-white border border-gray-100 p-3.5 rounded-2xl shadow-2xs">
+                                <div>
+                                    <span className="text-gray-400 block text-[11px]">Kasir</span>
+                                    <span className="font-bold text-gray-800">{kasirName}</span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-400 block text-[11px]">Metode Bayar</span>
+                                    <span className="font-bold text-gray-800">Tunai (Cash)</span>
+                                </div>
+                            </div>
+
+                            {/* Daftar Barang */}
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between text-xs font-bold text-gray-700 px-1">
+                                    <span>Menu yang Dipesan</span>
+                                    <span className="text-gray-400 font-medium">
+                                        {detail.items?.reduce((acc, curr) => acc + Number(curr.qty || 1), 0)} Item
+                                    </span>
                                 </div>
 
-                                <div className="divide-y divide-gray-100 border border-gray-100 rounded-2xl overflow-hidden bg-white shadow-2xs">
-                                    {detail.items && detail.items.length > 0 ? (
-                                        detail.items.map((item, idx) => (
+                                <div className="bg-white border border-gray-100 rounded-2xl p-3 divide-y divide-gray-50 shadow-2xs">
+                                    {detail.items?.length > 0 ? (
+                                        detail.items.map((item, index) => (
                                             <div
-                                                key={idx}
-                                                className="p-3.5 flex items-center justify-between hover:bg-gray-50/60 transition-colors"
+                                                key={index}
+                                                className="flex items-center justify-between py-2.5 first:pt-1 last:pb-1"
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-11 h-11 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
@@ -238,21 +287,21 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                     ) : (
                         /* TAB 2: Preview Kertas Struk Thermal Kasir */
                         <div className="py-2">
-                            <div className="receipt-paper">
+                            <div className={`receipt-paper size-${printSize}`}>
                                 <div className="receipt-center">
-                                    <h2 className="text-base font-black tracking-wider m-0">NINETASY</h2>
-                                    <p className="receipt-bold text-[10px] mt-0.5">COFFEE, DESSERT & STORE</p>
-                                    <p className="text-[9.5px] text-gray-600">Jl. Raya Rungkut No. 99, Surabaya</p>
-                                    <p className="text-[9.5px] text-gray-600">Telp: 0812-3456-7890</p>
+                                    <h2 className="receipt-bold tracking-wider m-0">NINETASY</h2>
+                                    <p className="receipt-bold mt-0.5">COFFEE, DESSERT & STORE</p>
+                                    <p className="text-gray-600">Jl. Raya Rungkut No. 99, Surabaya</p>
+                                    <p className="text-gray-600">Telp: 0812-3456-7890</p>
                                 </div>
 
                                 <div className="receipt-line"></div>
 
-                                <div className="receipt-row text-[10px]">
+                                <div className="receipt-row">
                                     <span>No. Nota:</span>
                                     <span className="receipt-bold">#{String(transaksiId).padStart(4, "0")}</span>
                                 </div>
-                                <div className="receipt-row text-[10px]">
+                                <div className="receipt-row">
                                     <span>Tanggal:</span>
                                     <span>
                                         {new Date(detail.created_at || detail.tanggal_transaksi).toLocaleString("id-ID", {
@@ -264,26 +313,26 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                                         })}
                                     </span>
                                 </div>
-                                <div className="receipt-row text-[10px]">
+                                <div className="receipt-row">
                                     <span>Kasir:</span>
                                     <span>{kasirName}</span>
                                 </div>
-                                <div className="receipt-row text-[10px]">
+                                <div className="receipt-row">
                                     <span>Metode:</span>
                                     <span>TUNAI (CASH)</span>
                                 </div>
 
                                 <div className="receipt-line"></div>
 
-                                <p className="receipt-bold text-[10px] mb-1.5">RINCIAN PESANAN:</p>
+                                <p className="receipt-bold mb-1.5">RINCIAN PESANAN:</p>
 
                                 {detail.items?.map((item, index) => (
                                     <div key={index} className="mb-2">
-                                        <div className="receipt-row">
-                                            <span className="receipt-bold">{item.nama_produk}</span>
+                                        <div className="receipt-row receipt-bold">
+                                            <span>{item.nama_produk}</span>
                                             <span>{formatRupiah(item.subtotal)}</span>
                                         </div>
-                                        <div className="text-[9.5px] text-gray-600">
+                                        <div className="text-[0.85em] text-gray-600">
                                             {item.qty} × {formatRupiah(item.harga)}
                                         </div>
                                     </div>
@@ -291,21 +340,21 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
 
                                 <div className="receipt-line"></div>
 
-                                <div className="receipt-row text-[10px]">
+                                <div className="receipt-row">
                                     <span>Total Item:</span>
                                     <span>
                                         {detail.items?.reduce((acc, curr) => acc + Number(curr.qty || 1), 0)} pcs
                                     </span>
                                 </div>
-                                <div className="receipt-row receipt-bold text-xs mt-1">
+                                <div className="receipt-row receipt-bold" style={{ fontSize: "1.15em", marginTop: "3px" }}>
                                     <span>TOTAL:</span>
                                     <span>{formatRupiah(detail.total_harga)}</span>
                                 </div>
-                                <div className="receipt-row text-[10px] mt-0.5">
+                                <div className="receipt-row">
                                     <span>TUNAI:</span>
                                     <span>{formatRupiah(detail.uang_bayar)}</span>
                                 </div>
-                                <div className="receipt-row receipt-bold text-[10px] mt-0.5 text-emerald-700">
+                                <div className="receipt-row receipt-bold">
                                     <span>KEMBALI:</span>
                                     <span>
                                         {Number(detail.kembalian) === 0 ? "UANG PAS" : formatRupiah(detail.kembalian)}
@@ -314,22 +363,22 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
 
                                 <div className="receipt-line"></div>
 
-                                <div className="receipt-center text-[10px] mt-3">
+                                <div className="receipt-center mt-3">
                                     <p className="receipt-bold">TERIMA KASIH</p>
                                     <p>ATAS KUNJUNGAN ANDA</p>
-                                    <p className="text-[8.5px] text-gray-500 mt-1">
+                                    <p className="text-[0.82em] text-gray-500 mt-1">
                                         Barang yang sudah dibeli tidak dapat ditukar
                                     </p>
-                                    <p className="text-[8.5px] text-gray-400">www.ninetasy.com</p>
+                                    <p className="text-[0.82em] text-gray-500">www.ninetasy.com</p>
                                 </div>
                             </div>
                         </div>
                     )}
                 </div>
 
-                {/* Area Print Khusus Thermal (hanya muncul saat window.print() dipanggil) */}
+                {/* TEMPLATE KHUSUS CETAK PRINTER / PDF (@media print) */}
                 {detail && (
-                    <div className="receipt-print">
+                    <div className={`receipt-print size-${printSize}`}>
                         <div className="receipt-center">
                             <h2>NINETASY</h2>
                             <p className="receipt-bold">COFFEE, DESSERT & STORE</p>
@@ -344,7 +393,7 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                             <span className="receipt-bold">#{String(transaksiId).padStart(4, "0")}</span>
                         </div>
                         <div className="receipt-row">
-                            <span>Waktu:</span>
+                            <span>Tanggal:</span>
                             <span>
                                 {new Date(detail.created_at || detail.tanggal_transaksi).toLocaleString("id-ID", {
                                     day: "2-digit",
@@ -366,17 +415,17 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
 
                         <div className="receipt-line"></div>
 
-                        <div className="receipt-bold" style={{ marginBottom: "4px" }}>
+                        <div className="receipt-bold" style={{ marginBottom: "5px" }}>
                             RINCIAN PESANAN:
                         </div>
 
                         {detail.items?.map((item, index) => (
-                            <div key={index} style={{ marginBottom: "4px" }}>
-                                <div className="receipt-row">
-                                    <span className="receipt-bold">{item.nama_produk}</span>
+                            <div key={index} style={{ marginBottom: "6px" }}>
+                                <div className="receipt-row receipt-bold">
+                                    <span>{item.nama_produk}</span>
                                     <span>{formatRupiah(item.subtotal)}</span>
                                 </div>
-                                <div style={{ color: "#333", fontSize: "9px" }}>
+                                <div style={{ color: "#333", fontSize: "0.85em" }}>
                                     {item.qty} × {formatRupiah(item.harga)}
                                 </div>
                             </div>
@@ -390,7 +439,7 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                                 {detail.items?.reduce((acc, curr) => acc + Number(curr.qty || 1), 0)} pcs
                             </span>
                         </div>
-                        <div className="receipt-row receipt-bold" style={{ fontSize: "12px", marginTop: "2px" }}>
+                        <div className="receipt-row receipt-bold" style={{ fontSize: "1.2em", marginTop: "4px" }}>
                             <span>TOTAL:</span>
                             <span>{formatRupiah(detail.total_harga)}</span>
                         </div>
@@ -407,21 +456,25 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
 
                         <div className="receipt-line"></div>
 
-                        <div className="receipt-center" style={{ marginTop: "6px" }}>
+                        <div className="receipt-center" style={{ marginTop: "8px" }}>
                             <p className="receipt-bold">TERIMA KASIH</p>
                             <p>ATAS KUNJUNGAN ANDA</p>
-                            <p style={{ fontSize: "8.5px", marginTop: "3px", color: "#555" }}>
+                            <p style={{ fontSize: "0.82em", marginTop: "3px", color: "#444" }}>
                                 Barang yang sudah dibeli tidak dapat ditukar
                             </p>
-                            <p style={{ fontSize: "8.5px", color: "#777" }}>www.ninetasy.com</p>
+                            <p style={{ fontSize: "0.82em", color: "#666" }}>www.ninetasy.com</p>
                         </div>
                     </div>
                 )}
 
                 {/* Footer Modal */}
                 <div className="p-4 border-t border-gray-100 flex items-center justify-between gap-3 bg-[#F8F7F5]">
-                    <span className="text-[11px] text-gray-400 hidden sm:inline">
-                        Format siap cetak printer thermal 58mm / 80mm
+                    <span className="text-[11px] text-gray-500">
+                        {printSize === "a4"
+                            ? "Format: Kertas A4 / PDF (Besar & Jelas)"
+                            : printSize === "80mm"
+                            ? "Format: Thermal 80mm (Standar Kasir POS)"
+                            : "Format: Thermal 58mm (Kecil)"}
                     </span>
                     <div className="flex items-center gap-2 ml-auto">
                         <button
