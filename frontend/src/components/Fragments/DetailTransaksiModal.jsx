@@ -13,7 +13,7 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
 
     // Ambil nama kasir yang sedang login
     const savedUser = localStorage.getItem("user");
-    let kasirName = "Kasir Ninetasy";
+    let kasirName = "Natasya Sandhyta A.P";
     try {
         if (savedUser) {
             const u = JSON.parse(savedUser);
@@ -290,9 +290,9 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                             <div className={`receipt-paper size-${printSize}`}>
                                 <div className="receipt-center">
                                     <h2 className="receipt-bold tracking-wider m-0">NINETASY</h2>
-                                    <p className="receipt-bold mt-0.5">COFFEE, DESSERT & STORE</p>
-                                    <p className="text-gray-600">Jl. Raya Rungkut No. 99, Surabaya</p>
-                                    <p className="text-gray-600">Telp: 0812-3456-7890</p>
+                                    <p className="receipt-bold mt-0.5">The Fairy Pantry</p>
+                                    <p className="text-gray-600">Jl. Raya Pulorejo, Kec. Prajurit Kulon, Kota. Mojokerto</p>
+                                    <p className="text-gray-600">Telp: 0821-4363-5239</p>
                                 </div>
 
                                 <div className="receipt-line"></div>
