@@ -5,6 +5,7 @@ import React, { useState, useMemo } from "react"; // Import React dan hooks
 import { Trash2, Plus, Minus } from "lucide-react"; // Import ikon dari lucide-react
 import api, { getImageUrl } from "../../api"; // Instance axios & helper gambar backend
 import defaultImage from "../../assets/gabin-ice-cream.png";
+import DetailTransaksiModal from "./DetailTransaksiModal";
 
 // Props yang diterima komponen:
 //   - cart: array item keranjang [{...produk, qty: number}]
@@ -18,6 +19,9 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
 
     // State loading saat request pembayaran sedang dikirim ke database
     const [loading, setLoading] = useState(false);
+
+    // State untuk membuka modal struk otomatis setelah pembayaran berhasil
+    const [successTransaksiId, setSuccessTransaksiId] = useState(null);
 
     // Hitung subtotal seluruh item di keranjang
     const subtotal = useMemo(() => {
@@ -71,13 +75,8 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
 
             if (response.data?.success) {
                 const trxId = response.data.data?.transaksi_id || "";
-                alert(
-                    ` Transaksi Berhasil Disimpan ke Database!\n\n` +
-                    `ID Transaksi: #${trxId}\n` +
-                    `Total: ${formatRupiah(subtotal)}\n` +
-                    `Bayar: ${formatRupiah(uangNum)}\n` +
-                    `Kembali: ${uangNum === subtotal && subtotal > 0 ? "Uang Pas" : formatRupiah(kembali)}`
-                );
+                // Tampilkan Modal Struk Transaksi secara otomatis
+                setSuccessTransaksiId(trxId);
 
                 // Kosongkan keranjang belanja setelah berhasil
                 if (onClearCart) onClearCart();
@@ -99,7 +98,8 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
     const orderNumber = `#${String(cart.length).padStart(3, "0")}`;
 
     return (
-        // Sidebar kanan — flex-shrink-0, sticky mengikuti scroll
+        <>
+        {/* Sidebar kanan — flex-shrink-0, sticky mengikuti scroll */}
         <aside className="w-72 min-h-screen flex-shrink-0 relative">
             <div className="sticky top-0 h-screen pt-20">
                 {/* Panel putih dengan sudut bulat di kiri atas */}
@@ -228,5 +228,14 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
                 </div>
             </div>
         </aside>
+
+        {/* Modal Cetak Struk Otomatis setelah transaksi berhasil */}
+        {successTransaksiId && (
+            <DetailTransaksiModal
+                transaksiId={successTransaksiId}
+                onClose={() => setSuccessTransaksiId(null)}
+            />
+        )}
+        </>
     );
 }

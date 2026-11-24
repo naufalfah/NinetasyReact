@@ -1,0 +1,131 @@
+/* receipt.css — Styling untuk Cetak Struk Thermal POS Ninetasy */
+
+/* Tampilan Normal di Layar (disembunyikan saat di luar print) */
+.receipt-print {
+    display: none;
+}
+
+/* Kertas Struk Preview di Layar (Screen Preview) */
+.receipt-paper {
+    background: #ffffff;
+    color: #111111;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px;
+    line-height: 1.45;
+    padding: 20px 18px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    border: 1px dashed #d1d5db;
+    max-width: 330px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.receipt-paper .receipt-line,
+.receipt-print .receipt-line {
+    border-top: 1px dashed #777777;
+    margin: 8px 0;
+}
+
+.receipt-paper .receipt-row,
+.receipt-print .receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.receipt-paper .receipt-bold,
+.receipt-print .receipt-bold {
+    font-weight: 700;
+}
+
+.receipt-paper .receipt-center,
+.receipt-print .receipt-center {
+    text-align: center;
+}
+
+.receipt-paper .receipt-right,
+.receipt-print .receipt-right {
+    text-align: right;
+}
+
+/* Pengaturan Khusus Mode Print (@media print) */
+@media print {
+    @page {
+        size: 58mm auto;
+        margin: 0mm;
+    }
+
+    /* Sembunyikan seluruh UI website saat cetak */
+    html, body {
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        overflow: visible !important;
+    }
+
+    body * {
+        visibility: hidden !important;
+    }
+
+    /* Hanya tampilkan elemen struk print */
+    .receipt-print,
+    .receipt-print * {
+        visibility: visible !important;
+    }
+
+    .receipt-print {
+        display: block !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 58mm !important;
+        max-width: 58mm !important;
+        padding: 4mm 3mm !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        font-size: 10px !important;
+        line-height: 1.35 !important;
+        box-sizing: border-box !important;
+        z-index: 999999 !important;
+    }
+
+    .receipt-print h2 {
+        text-align: center;
+        font-size: 16px;
+        font-weight: 900;
+        margin: 0 0 2px 0;
+        letter-spacing: 1px;
+    }
+
+    .receipt-print p {
+        margin: 1.5px 0;
+    }
+
+    .receipt-print .receipt-line {
+        border-top: 1px dashed #000000 !important;
+        margin: 6px 0 !important;
+    }
+
+    .receipt-print .receipt-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        gap: 4px !important;
+    }
+
+    .receipt-print .receipt-bold {
+        font-weight: bold !important;
+    }
+
+    .receipt-print .receipt-center {
+        text-align: center !important;
+    }
+
+    .receipt-print .receipt-right {
+        text-align: right !important;
+    }
+}
