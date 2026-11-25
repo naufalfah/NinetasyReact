@@ -55,11 +55,26 @@ export default function UserRiwayat() {
         fetchRiwayat();
     }, []);
 
+    // Helper ekstraksi tanggal lokal YYYY-MM-DD dari transaksi kasir
+    const parseTransactionDate = (trx) => {
+        // Utamakan created_at karena waktu spesifik tersimpan dan dikonversi ke waktu lokal kasir (WIB)
+        if (trx.created_at) {
+            const d = new Date(trx.created_at);
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${y}-${m}-${day}`;
+        }
+        if (trx.tanggal_transaksi) {
+            return String(trx.tanggal_transaksi).slice(0, 10);
+        }
+        return "";
+    };
+
     // Filter transaksi berdasarkan pilihan user
     const filteredTransaksi = useMemo(() => {
         return transaksi.filter((trx) => {
-            const rawDate = trx.tanggal_transaksi || trx.created_at;
-            const trxDate = rawDate ? getLocalDateString(rawDate) : "";
+            const trxDate = parseTransactionDate(trx);
 
             if (filterType === "today") {
                 return trxDate === todayStr;

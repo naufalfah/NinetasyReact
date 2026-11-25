@@ -40,6 +40,24 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
     // Format angka ke format mata uang Indonesia
     const formatRupiah = (val) => `Rp. ${val.toLocaleString("id-ID")},00`;
 
+    // Handler penambahan nominal uang cepat (+500, +1000, +2000, +5000, dst)
+    const handleAddUang = (nominal) => {
+        setUang((prev) => {
+            const current = parseInt(prev, 10) || 0;
+            return String(current + nominal);
+        });
+    };
+
+    // Handler Uang Pas
+    const handleSetUangPas = () => {
+        setUang(String(subtotal));
+    };
+
+    // Handler Reset Input Uang
+    const handleClearUang = () => {
+        setUang("");
+    };
+
     // Handler tombol bayar: validasi dan simpan ke database
     const handleBayar = async () => {
         // Validasi keranjang tidak boleh kosong
@@ -199,8 +217,52 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
                                 value={uang}
                                 onChange={(e) => setUang(e.target.value)}
                                 placeholder="0"
-                                className="w-28 text-right text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none focus:border-gray-400"
+                                className="w-28 text-right text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none focus:border-gray-400 font-bold text-gray-800"
                             />
+                        </div>
+
+                        {/* Tombol Cepat Pecahan Uang Kasir (500, 1000, 2000, 5000, 10000, 20000, 50000) */}
+                        <div className="pt-1 pb-1 space-y-1.5">
+                            {/* Tombol Uang Pas & Reset C */}
+                            <div className="flex items-center gap-1.5">
+                                <button
+                                    type="button"
+                                    onClick={handleSetUangPas}
+                                    disabled={subtotal <= 0}
+                                    className="flex-1 py-1 px-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[10px] font-bold transition-all active:scale-95 cursor-pointer disabled:opacity-40"
+                                >
+                                    Uang Pas ({formatRupiah(subtotal)})
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleClearUang}
+                                    className="py-1 px-2.5 rounded-lg bg-gray-100 hover:bg-rose-50 hover:text-rose-600 text-gray-500 text-[10px] font-bold transition-all active:scale-95 cursor-pointer"
+                                    title="Reset Input Uang"
+                                >
+                                    Reset (C)
+                                </button>
+                            </div>
+
+                            {/* Grid Tombol Pecahan Uang Kasir */}
+                            <div className="grid grid-cols-4 gap-1">
+                                {[500, 1000, 2000, 5000, 10000, 20000, 50000].map((nominal) => (
+                                    <button
+                                        key={nominal}
+                                        type="button"
+                                        onClick={() => handleAddUang(nominal)}
+                                        className="py-1 px-1 rounded-lg bg-[#FAF9F7] hover:bg-[#3D3D3D] hover:text-white text-gray-700 border border-gray-200/80 text-[10px] font-bold transition-all active:scale-95 cursor-pointer text-center"
+                                    >
+                                        +{nominal >= 1000 ? `${nominal / 1000}k` : nominal}
+                                    </button>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => handleAddUang(100000)}
+                                    className="py-1 px-1 rounded-lg bg-[#FAF9F7] hover:bg-[#3D3D3D] hover:text-white text-gray-700 border border-gray-200/80 text-[10px] font-bold transition-all active:scale-95 cursor-pointer text-center"
+                                >
+                                    +100k
+                                </button>
+                            </div>
                         </div>
                         {/* Kembalian */}
                         <div className="flex justify-between items-center text-xs">

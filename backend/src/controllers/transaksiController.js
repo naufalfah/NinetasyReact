@@ -31,8 +31,13 @@ exports.simpanTransaksi = async (req, res) => {
         // Mulai transaksi atomik
         await connection.beginTransaction();
 
-        // Tanggal transaksi hari ini (format YYYY-MM-DD)
-        const tanggal_transaksi = new Date().toISOString().split("T")[0];
+        // Tanggal transaksi hari ini sesuai zona waktu lokal Indonesia (UTC+7)
+        const now = new Date();
+        const localWIB = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+        const year = localWIB.getUTCFullYear();
+        const month = String(localWIB.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(localWIB.getUTCDate()).padStart(2, "0");
+        const tanggal_transaksi = `${year}-${month}-${day}`;
 
         // 1. Simpan ke tabel master: tb_transaksi
         const queryTransaksi = `
@@ -116,7 +121,12 @@ exports.getRiwayatTransaksi = async (req, res) => {
     try {
         const query = `
             SELECT 
-                t.*,
+                t.id,
+                COALESCE(DATE_FORMAT(t.tanggal_transaksi, '%Y-%m-%d'), DATE_FORMAT(t.created_at, '%Y-%m-%d')) AS tanggal_transaksi,
+                t.created_at,
+                t.total_harga,
+                t.uang_bayar,
+                t.kembalian,
                 COUNT(d.id) AS total_jenis_item,
                 COALESCE(SUM(d.qty), 0) AS total_qty
             FROM tb_transaksi t

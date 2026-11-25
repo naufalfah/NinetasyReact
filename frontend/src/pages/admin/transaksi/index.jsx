@@ -56,11 +56,25 @@ export default function AdminTransaksi() {
         fetchTransaksi();
     }, []);
 
+    // Helper ekstraksi tanggal lokal YYYY-MM-DD dari transaksi
+    const parseTransactionDate = (trx) => {
+        if (trx.created_at) {
+            const d = new Date(trx.created_at);
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${y}-${m}-${day}`;
+        }
+        if (trx.tanggal_transaksi) {
+            return String(trx.tanggal_transaksi).slice(0, 10);
+        }
+        return "";
+    };
+
     // Filter transaksi berdasarkan tanggal & pencarian
     const filtered = useMemo(() => {
         return transaksiList.filter((trx) => {
-            const rawDate = trx.tanggal_transaksi || trx.created_at;
-            const trxDate = rawDate ? getLocalDateString(rawDate) : "";
+            const trxDate = parseTransactionDate(trx);
 
             // 1. Filter Tanggal
             let matchDate = true;
@@ -78,7 +92,8 @@ export default function AdminTransaksi() {
 
             // 2. Filter Search Query
             const idStr = String(trx.id);
-            const tglStr = String(rawDate || "");
+            const rawDate = trx.created_at || trx.tanggal_transaksi || "";
+            const tglStr = String(rawDate);
             const query = searchQuery.toLowerCase();
             return idStr.includes(query) || tglStr.includes(query);
         });
