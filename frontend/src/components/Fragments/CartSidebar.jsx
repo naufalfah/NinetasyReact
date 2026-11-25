@@ -117,113 +117,112 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
 
     return (
         <>
-        {/* Sidebar kanan — flex-shrink-0, sticky mengikuti scroll */}
-        <aside className="w-72 min-h-screen flex-shrink-0 relative">
-            <div className="sticky top-0 h-screen pt-20">
-                {/* Panel putih dengan sudut bulat di kiri atas */}
-                <div className="h-full w-72 rounded-tl-[50px] bg-white shadow-xl flex flex-col">
-                    {/* Header: Judul panel dan nomor order */}
-                    <div className="p-6 pb-3">
-                        <h2 className="text-lg font-bold text-gray-900">Detail Transaksi</h2>
-                        <p className="text-xs text-gray-400 mt-1">{orderNumber}</p>
-                    </div>
+            {/* Sidebar kanan — flex-shrink-0, sticky mengikuti scroll */}
+            <aside className="w-72 min-h-screen flex-shrink-0 relative">
+                <div className="sticky top-0 h-screen pt-20">
+                    {/* Panel putih dengan sudut bulat di kiri atas */}
+                    <div className="h-full w-72 rounded-tl-[50px] bg-white shadow-xl flex flex-col">
+                        {/* Header: Judul panel dan nomor order */}
+                        <div className="p-6 pb-3">
+                            <h2 className="text-lg font-bold text-gray-900">Detail Transaksi</h2>
+                            <p className="text-xs text-gray-400 mt-1">{orderNumber}</p>
+                        </div>
 
-                    {/* Garis pemisah */}
-                    <hr className="border-gray-100 mx-6" />
+                        {/* Garis pemisah */}
+                        <hr className="border-gray-100 mx-6" />
 
-                    {/* Daftar item belanja di keranjang — scrollable */}
-                    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-                        {/* Pesan jika keranjang masih kosong */}
-                        {cart.length === 0 && (
-                            <p className="text-center text-gray-300 text-xs py-10">
-                                Belum ada item di keranjang
-                            </p>
-                        )}
+                        {/* Daftar item belanja di keranjang — scrollable */}
+                        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+                            {/* Pesan jika keranjang masih kosong */}
+                            {cart.length === 0 && (
+                                <p className="text-center text-gray-300 text-xs py-10">
+                                    Belum ada item di keranjang
+                                </p>
+                            )}
 
-                        {/* Loop seluruh item di keranjang */}
-                        {cart.map((item) => {
-                            const harga = item.harga ?? item.price ?? 0;
-                            return (
-                                <div key={item.id} className="flex items-start gap-3">
-                                    {/* Thumbnail gambar produk */}
-                                    <div className="w-11 h-11 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
-                                        <img
-                                            src={getImageUrl(item.image || item.gambar) || defaultImage}
-                                            alt={item.name || item.nama_produk}
-                                            onError={(e) => {
-                                                if (e.currentTarget.src !== defaultImage) {
-                                                    e.currentTarget.src = defaultImage;
-                                                }
-                                            }}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-
-                                    {/* Info produk: nama, kategori, harga */}
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-bold text-gray-900 truncate">{item.name}</p>
-                                        <p className="text-[10px] text-gray-400">{item.kategori || "Lainnya"}</p>
-                                        <p className="text-[11px] font-semibold text-gray-700 mt-0.5">
-                                            {formatRupiah(harga)}
-                                        </p>
-                                        {/* Kontrol kuantitas (- angka +) */}
-                                        <div className="flex items-center gap-1.5 mt-1.5">
-                                            <button
-                                                type="button"
-                                                onClick={() => onUpdateQty && onUpdateQty(item.id, item.qty - 1)}
-                                                className="w-5 h-5 rounded-md bg-gray-100 hover:bg-gray-200 flex items-center justify-center cursor-pointer"
-                                                aria-label="Kurangi qty"
-                                            >
-                                                <Minus size={10} />
-                                            </button>
-                                            <span className="text-[11px] font-semibold min-w-4 text-center">{item.qty}</span>
-                                            <button
-                                                type="button"
-                                                onClick={() => onUpdateQty && onUpdateQty(item.id, item.qty + 1)}
-                                                className="w-5 h-5 rounded-md bg-gray-100 hover:bg-gray-200 flex items-center justify-center cursor-pointer"
-                                                aria-label="Tambah qty"
-                                            >
-                                                <Plus size={10} />
-                                            </button>
+                            {/* Loop seluruh item di keranjang */}
+                            {cart.map((item) => {
+                                const harga = item.harga ?? item.price ?? 0;
+                                return (
+                                    <div key={item.id} className="flex items-start gap-3">
+                                        {/* Thumbnail gambar produk */}
+                                        <div className="w-11 h-11 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+                                            <img
+                                                src={getImageUrl(item.image || item.gambar) || defaultImage}
+                                                alt={item.name || item.nama_produk}
+                                                onError={(e) => {
+                                                    if (e.currentTarget.src !== defaultImage) {
+                                                        e.currentTarget.src = defaultImage;
+                                                    }
+                                                }}
+                                                className="w-full h-full object-cover"
+                                            />
                                         </div>
+
+                                        {/* Info produk: nama, kategori, harga */}
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-xs font-bold text-gray-900 truncate">{item.name}</p>
+                                            <p className="text-[10px] text-gray-400">{item.kategori || "Lainnya"}</p>
+                                            <p className="text-[11px] font-semibold text-gray-700 mt-0.5">
+                                                {formatRupiah(harga)}
+                                            </p>
+                                            {/* Kontrol kuantitas (- angka +) */}
+                                            <div className="flex items-center gap-1.5 mt-1.5">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => onUpdateQty && onUpdateQty(item.id, item.qty - 1)}
+                                                    className="w-5 h-5 rounded-md bg-gray-100 hover:bg-gray-200 flex items-center justify-center cursor-pointer"
+                                                    aria-label="Kurangi qty"
+                                                >
+                                                    <Minus size={10} />
+                                                </button>
+                                                <span className="text-[11px] font-semibold min-w-4 text-center">{item.qty}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => onUpdateQty && onUpdateQty(item.id, item.qty + 1)}
+                                                    className="w-5 h-5 rounded-md bg-gray-100 hover:bg-gray-200 flex items-center justify-center cursor-pointer"
+                                                    aria-label="Tambah qty"
+                                                >
+                                                    <Plus size={10} />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Tombol hapus item */}
+                                        <button
+                                            type="button"
+                                            onClick={() => onRemoveItem && onRemoveItem(item.id)}
+                                            className="text-red-400 hover:text-red-600 cursor-pointer p-1 mt-1"
+                                            aria-label="Hapus item"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
                                     </div>
-
-                                    {/* Tombol hapus item */}
-                                    <button
-                                        type="button"
-                                        onClick={() => onRemoveItem && onRemoveItem(item.id)}
-                                        className="text-red-400 hover:text-red-600 cursor-pointer p-1 mt-1"
-                                        aria-label="Hapus item"
-                                    >
-                                        <Trash2 size={14} />
-                                    </button>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    {/* Ringkasan pembayaran dan tombol submit */}
-                    <div className="px-6 pb-6 pt-3 border-t border-gray-100 space-y-2">
-                        {/* Subtotal */}
-                        <div className="flex justify-between text-xs">
-                            <span className="font-bold text-gray-600">Subtotal</span>
-                            <span className="text-gray-700">{formatRupiah(subtotal)}</span>
-                        </div>
-                        {/* Input uang pembayaran */}
-                        <div className="flex justify-between items-center text-xs">
-                            <span className="font-bold text-gray-600">Uang</span>
-                            <input
-                                type="number"
-                                value={uang}
-                                onChange={(e) => setUang(e.target.value)}
-                                placeholder="0"
-                                className="w-28 text-right text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none focus:border-gray-400 font-bold text-gray-800"
-                            />
+                                );
+                            })}
                         </div>
 
-                        {/* Tombol Cepat Pecahan Uang Kasir (500, 1000, 2000, 5000, 10000, 20000, 50000) */}
-                        <div className="pt-1 pb-1 space-y-1.5">
-                            {/* Tombol Uang Pas & Reset C */}
+                        {/* Ringkasan pembayaran dan tombol submit */}
+                        <div className="px-4 pb-4 pt-3 border-t border-gray-100 space-y-2">
+                            {/* Subtotal */}
+                            <div className="flex justify-between text-xs">
+                                <span className="font-bold text-gray-600">Subtotal</span>
+                                <span className="text-gray-700">{formatRupiah(subtotal)}</span>
+                            </div>
+
+                            {/* Input uang pembayaran */}
+                            <div className="flex justify-between items-center text-xs">
+                                <span className="font-bold text-gray-600">Uang</span>
+                                <input
+                                    type="number"
+                                    value={uang}
+                                    onChange={(e) => setUang(e.target.value)}
+                                    placeholder="0"
+                                    className="w-28 text-right text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none focus:border-gray-400 font-bold text-gray-800"
+                                />
+                            </div>
+
+                            {/* Tombol Uang Pas & Reset */}
                             <div className="flex items-center gap-1.5">
                                 <button
                                     type="button"
@@ -245,7 +244,7 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
 
                             {/* Grid Tombol Pecahan Uang Kasir */}
                             <div className="grid grid-cols-4 gap-1">
-                                {[500, 1000, 2000, 5000, 10000, 20000, 50000].map((nominal) => (
+                                {[500, 1000, 2000, 5000, 10000, 20000, 50000, 100000].map((nominal) => (
                                     <button
                                         key={nominal}
                                         type="button"
@@ -255,49 +254,43 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
                                         +{nominal >= 1000 ? `${nominal / 1000}k` : nominal}
                                     </button>
                                 ))}
-                                <button
-                                    type="button"
-                                    onClick={() => handleAddUang(100000)}
-                                    className="py-1 px-1 rounded-lg bg-[#FAF9F7] hover:bg-[#3D3D3D] hover:text-white text-gray-700 border border-gray-200/80 text-[10px] font-bold transition-all active:scale-95 cursor-pointer text-center"
-                                >
-                                    +100k
-                                </button>
                             </div>
+
+                            {/* Kembalian */}
+                            <div className="flex justify-between items-center text-xs">
+                                <span className="font-bold text-gray-600">Kembali</span>
+                                {subtotal > 0 && uangNum === subtotal ? (
+                                    <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                                        Uang Pas
+                                    </span>
+                                ) : (
+                                    <span className="text-gray-700 font-medium">{formatRupiah(kembali)}</span>
+                                )}
+                            </div>
+
+                            {/* Tombol bayar / simpan transaksi */}
+                            <button
+                                type="button"
+                                disabled={loading}
+                                onClick={handleBayar}
+                                className={`w-full py-2.5 rounded-2xl font-bold text-sm bg-[#3D3D3D] text-white hover:bg-[#2D2D2D] active:scale-[0.98] transition-all cursor-pointer mt-2 ${
+                                    loading ? "opacity-60 cursor-not-allowed" : ""
+                                }`}
+                            >
+                                {loading ? "Menyimpan..." : "Bayar"}
+                            </button>
                         </div>
-                        {/* Kembalian */}
-                        <div className="flex justify-between items-center text-xs">
-                            <span className="font-bold text-gray-600">Kembali</span>
-                            {subtotal > 0 && uangNum === subtotal ? (
-                                <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
-                                    Uang Pas
-                                </span>
-                            ) : (
-                                <span className="text-gray-700 font-medium">{formatRupiah(kembali)}</span>
-                            )}
-                        </div>
-                        {/* Tombol bayar / simpan transaksi */}
-                        <button
-                            type="button"
-                            disabled={loading}
-                            onClick={handleBayar}
-                            className={`w-full py-2.5 rounded-2xl font-bold text-sm bg-[#3D3D3D] text-white hover:bg-[#2D2D2D] active:scale-[0.98] transition-all cursor-pointer mt-2 ${
-                                loading ? "opacity-60 cursor-not-allowed" : ""
-                            }`}
-                        >
-                            {loading ? "Menyimpan..." : "Bayar"}
-                        </button>
                     </div>
                 </div>
-            </div>
-        </aside>
+            </aside>
 
-        {/* Modal Cetak Struk Otomatis setelah transaksi berhasil */}
-        {successTransaksiId && (
-            <DetailTransaksiModal
-                transaksiId={successTransaksiId}
-                onClose={() => setSuccessTransaksiId(null)}
-            />
-        )}
+            {/* Modal Cetak Struk Otomatis setelah transaksi berhasil */}
+            {successTransaksiId && (
+                <DetailTransaksiModal
+                    transaksiId={successTransaksiId}
+                    onClose={() => setSuccessTransaksiId(null)}
+                />
+            )}
         </>
     );
 }
