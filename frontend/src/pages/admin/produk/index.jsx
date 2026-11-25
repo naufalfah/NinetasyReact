@@ -30,6 +30,7 @@ export default function AdminProduk() {
 
     // State untuk fitur restock incremental di dalam modal edit
     const [stokAsli, setStokAsli] = useState(0);
+    const [kurangStok, setKurangStok] = useState("")
     const [tambahStokInput, setTambahStokInput] = useState("");
 
     // State Modal Khusus Tambah Stok Cepat (Quick Restock)
@@ -64,6 +65,7 @@ export default function AdminProduk() {
         setEditId(null);
         setStokAsli(0);
         setTambahStokInput("");
+        setKurangStok("");
         setSelectedFile(null);
         setPreviewUrl("");
         if (fileInputRef.current) fileInputRef.current.value = "";
@@ -83,6 +85,7 @@ export default function AdminProduk() {
         setEditId(prod.id);
         const currentStok = Number(prod.stok ?? 0);
         setStokAsli(currentStok);
+        setKurangStok("")
         setTambahStokInput("");
         setSelectedFile(null);
         const currentImg = prod.gambar || prod.image || "";
@@ -135,10 +138,12 @@ export default function AdminProduk() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Hitung stok final jika dalam mode edit dan ada input penambahan stok
+            // Hitung stok final jika dalam mode edit dan ada input penambahan atau pengurangan stok
             let finalStok = Number(formData.stok);
-            if (editId && tambahStokInput !== "") {
-                finalStok = Number(stokAsli) + Number(tambahStokInput || 0);
+            if (editId && (tambahStokInput !== "" || kurangStok !== "")) {
+                const tambah = Number(tambahStokInput || 0);
+                const kurang = Number(kurangStok || 0);
+                finalStok = Math.max(0, Number(stokAsli) + tambah - kurang);
             }
 
             // Gunakan FormData untuk upload multipart/form-data ke storage publik backend
@@ -454,21 +459,21 @@ export default function AdminProduk() {
                                             </div>
                                         )}
 
-                                        {/* JIKA EDIT PRODUK: Kotak Stok Asli + Input Tambah Stok = Total Baru */}
+                                        {/* JIKA EDIT PRODUK: Kotak Stok Asli + Input Tambah Stok + Input Kurang Stok = Total Baru */}
                                         {editId && (
                                             <div className="bg-[#FAF9F7] border border-gray-200/80 rounded-2xl p-3">
                                                 <label className="block font-bold text-gray-800 mb-2">
-                                                    Perhitungan Penambahan Stok
+                                                    Penyesuaian Stok (Tambah / Kurang)
                                                 </label>
 
-                                                <div className="grid grid-cols-3 gap-2 items-center text-center">
+                                                <div className="grid grid-cols-4 gap-2 items-center text-center">
                                                     {/* Kotak Stok Asli */}
                                                     <div className="bg-white border border-gray-200 p-2 rounded-xl shadow-2xs">
                                                         <p className="text-[10px] text-gray-400 font-semibold mb-0.5">Stok Asli</p>
                                                         <p className="text-sm font-black text-gray-800">{stokAsli}</p>
                                                     </div>
 
-                                                    {/* Input Tambah Stok (+20) */}
+                                                    {/* Input Tambah Stok */}
                                                     <div className="bg-white border border-emerald-300 p-1.5 rounded-xl shadow-2xs focus-within:ring-2 focus-within:ring-emerald-400">
                                                         <p className="text-[10px] text-emerald-600 font-bold mb-0.5">+ Tambah</p>
                                                         <input
@@ -481,17 +486,36 @@ export default function AdminProduk() {
                                                         />
                                                     </div>
 
-                                                    {/* Kotak Total Stok Baru (66) */}
+                                                    {/* Input Kurang Stok */}
+                                                    <div className="bg-white border border-rose-300 p-1.5 rounded-xl shadow-2xs focus-within:ring-2 focus-within:ring-rose-400">
+                                                        <p className="text-[10px] text-rose-600 font-bold mb-0.5">- Kurang</p>
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            value={kurangStok}
+                                                            onChange={(e) => setKurangStok(e.target.value)}
+                                                            placeholder="0"
+                                                            className="w-full text-center text-sm font-black text-rose-700 outline-none bg-transparent"
+                                                        />
+                                                    </div>
+
+                                                    {/* Kotak Total Stok Baru */}
                                                     <div className="bg-emerald-50 border border-emerald-200 p-2 rounded-xl shadow-2xs">
                                                         <p className="text-[10px] text-emerald-700 font-semibold mb-0.5">Stok Baru</p>
                                                         <p className="text-sm font-black text-emerald-800">
-                                                            {Number(stokAsli) + Number(tambahStokInput || 0)}
+                                                            {Math.max(0, Number(stokAsli) + Number(tambahStokInput || 0) - Number(kurangStok || 0))}
                                                         </p>
                                                     </div>
                                                 </div>
 
                                                 <p className="text-[10px] text-gray-400 mt-2 text-center">
-                                                    Stok asli {stokAsli} + {tambahStokInput || 0} = Total stok {Number(stokAsli) + Number(tambahStokInput || 0)} unit.
+                                                    Stok asli {stokAsli}
+                                                    {tambahStokInput ? ` + ${tambahStokInput}` : ""}
+                                                    {kurangStok ? ` - ${kurangStok}` : ""}
+                                                    {" = "}
+                                                    <span className="font-bold text-gray-700">
+                                                        {Math.max(0, Number(stokAsli) + Number(tambahStokInput || 0) - Number(kurangStok || 0))} unit
+                                                    </span>
                                                 </p>
                                             </div>
                                         )}
