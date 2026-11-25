@@ -194,3 +194,41 @@ exports.getDetailTransaksi = async (req, res) => {
         });
     }
 };
+
+// Controller untuk mereset / menghapus seluruh riwayat transaksi
+exports.resetRiwayatTransaksi = async (req, res) => {
+    const connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // Hapus detail transaksi terlebih dahulu (foreign key)
+        await connection.execute(`DELETE FROM tb_detail_transaksi`);
+        // Hapus master transaksi
+        await connection.execute(`DELETE FROM tb_transaksi`);
+
+        // Reset auto increment jika memungkinkan
+        try {
+            await connection.execute(`ALTER TABLE tb_detail_transaksi AUTO_INCREMENT = 1`);
+            await connection.execute(`ALTER TABLE tb_transaksi AUTO_INCREMENT = 1`);
+        } catch (e) {
+            // Abaikan jika tidak didukung di cloud database
+        }
+
+        await connection.commit();
+
+        return res.status(200).json({
+            success: true,
+            message: "Seluruh riwayat transaksi berhasil di-reset menjadi kosong!",
+        });
+    } catch (error) {
+        await connection.rollback();
+        console.error("Gagal reset transaksi:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Gagal mereset riwayat transaksi.",
+            error: error.message,
+        });
+    } finally {
+        connection.release();
+    }
+};

@@ -6,21 +6,11 @@ import { X, Receipt, ShoppingBag, CheckCircle2, Printer, FileText } from "lucide
 import defaultImage from "../../assets/gabin-ice-cream.png";
 import "../../styles/receipt.css";
 
-export default function DetailTransaksiModal({ transaksiId, onClose, autoPrint = false }) {
+export default function DetailTransaksiModal({ transaksiId, onClose }) {
     const [detail, setDetail] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("menu"); // "menu" | "struk"
     const [printSize, setPrintSize] = useState("80mm"); // "58mm" | "80mm" | "a4"
-
-    // Otomatis cetak tanpa klik jika autoPrint aktif
-    useEffect(() => {
-        if (detail && autoPrint) {
-            const timer = setTimeout(() => {
-                window.print();
-            }, 400);
-            return () => clearTimeout(timer);
-        }
-    }, [detail, autoPrint]);
 
     // Ambil nama kasir yang sedang login
     const savedUser = localStorage.getItem("user");

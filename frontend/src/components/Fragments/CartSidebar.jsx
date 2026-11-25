@@ -233,7 +233,6 @@ export default function CartSidebar({ cart = [], onUpdateQty, onRemoveItem, onCl
         {successTransaksiId && (
             <DetailTransaksiModal
                 transaksiId={successTransaksiId}
-                autoPrint={true}
                 onClose={() => setSuccessTransaksiId(null)}
             />
         )}
