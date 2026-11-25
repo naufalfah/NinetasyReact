@@ -291,11 +291,14 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                             /* TAB 2: Preview Kertas Struk Thermal Kasir */
                             <div className="py-2">
                                 <div className={`receipt-paper size-${printSize}`}>
-                                    <div className="receipt-center">
-                                        <h2 className="receipt-bold tracking-wider m-0">NINETASY</h2>
-                                        <p className="receipt-bold mt-0.5">The Fairy Pantry</p>
-                                        <p className="text-gray-600">Jl. Raya Pulorejo, Kec. Prajurit Kulon, Kota. Mojokerto</p>
-                                        <p className="text-gray-600">Telp: 0821-4363-5239</p>
+                                    <div className="receipt-header">
+                                        <h2 className="receipt-store-title">NINETASY</h2>
+                                        <p className="receipt-store-sub">The Fairy Pantry</p>
+                                        <p className="receipt-store-address">
+                                            Jl. Raya Pulorejo, Kec. Prajurit Kulon<br />
+                                            Kota Mojokerto
+                                        </p>
+                                        <p className="receipt-store-telp">Telp: 0821-4363-5239</p>
                                     </div>
 
                                     <div className="receipt-line"></div>
@@ -414,11 +417,14 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                 sehingga tidak tertimpa overlay / backdrop-blur modal yang membuat printer thermal nge-bug */}
             {detail && typeof document !== "undefined" && createPortal(
                 <div id="receipt-print-container" className={`receipt-print size-${printSize}`}>
-                    <div className="receipt-center">
-                        <h2>NINETASY</h2>
-                        <p className="receipt-bold">The Fairy Pantry</p>
-                        <p>Jl. Raya Pulorejo, Kec. Prajurit Kulon, Kota. Mojokerto</p>
-                        <p>Telp: 0821-4363-5239</p>
+                    <div className="receipt-header">
+                        <h2 className="receipt-store-title">NINETASY</h2>
+                        <p className="receipt-store-sub">The Fairy Pantry</p>
+                        <p className="receipt-store-address">
+                            Jl. Raya Pulorejo, Kec. Prajurit Kulon<br />
+                            Kota Mojokerto
+                        </p>
+                        <p className="receipt-store-telp">Telp: 0821-4363-5239</p>
                     </div>
 
                     <div className="receipt-line"></div>
@@ -500,6 +506,8 @@ export default function DetailTransaksiModal({ transaksiId, onClose }) {
                         </p>
                         <p style={{ fontSize: "0.85em" }}>www.ninetasy.com</p>
                     </div>
+                    {/* Ruang kosong pengaman agar teks tidak terpotong pisau/sobekan kertas */}
+                    <div style={{ height: "6mm" }}></div>
                 </div>,
                 document.body
             )}

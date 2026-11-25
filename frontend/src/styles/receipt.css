@@ -11,7 +11,7 @@
     color: #111111;
     font-family: 'Courier New', Courier, monospace;
     line-height: 1.45;
-    padding: 22px 20px;
+    padding: 24px 20px;
     border-radius: 16px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
     border: 1px dashed #d1d5db;
@@ -31,6 +31,39 @@
 .receipt-paper.size-a4 {
     max-width: 460px;
     font-size: 15px;
+}
+
+.receipt-paper .receipt-header,
+.receipt-print .receipt-header {
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.receipt-paper .receipt-store-title,
+.receipt-print .receipt-store-title {
+    font-weight: 900;
+    margin: 0 0 4px 0;
+    letter-spacing: 1px;
+    line-height: 1.2;
+}
+
+.receipt-paper .receipt-store-sub,
+.receipt-print .receipt-store-sub {
+    font-weight: bold;
+    margin: 0 0 6px 0;
+    line-height: 1.35;
+}
+
+.receipt-paper .receipt-store-address,
+.receipt-print .receipt-store-address {
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+}
+
+.receipt-paper .receipt-store-telp,
+.receipt-print .receipt-store-telp {
+    margin: 0 0 4px 0;
+    line-height: 1.35;
 }
 
 .receipt-paper .receipt-line,
@@ -113,49 +146,97 @@
         background: transparent !important;
     }
 
+    /* Styling Header Khusus Print dengan jarak aman agar tidak saling bertumpuk */
+    .receipt-print .receipt-header {
+        text-align: center !important;
+        padding-top: 3mm !important; /* Jarak aman dari sobekan kertas atas */
+        margin-bottom: 6px !important;
+    }
+
+    .receipt-print .receipt-store-title {
+        font-weight: 900 !important;
+        margin: 0 0 5px 0 !important;
+        line-height: 1.25 !important;
+        letter-spacing: 1px !important;
+    }
+
+    .receipt-print .receipt-store-sub {
+        font-weight: bold !important;
+        margin: 0 0 6px 0 !important;
+        line-height: 1.35 !important;
+        display: block !important;
+    }
+
+    .receipt-print .receipt-store-address {
+        margin: 0 0 4px 0 !important;
+        line-height: 1.45 !important;
+        display: block !important;
+    }
+
+    .receipt-print .receipt-store-telp {
+        margin: 0 0 4px 0 !important;
+        line-height: 1.35 !important;
+        display: block !important;
+    }
+
     /* Ukuran 58mm (Thermal Kecil 58mm POS) */
     .receipt-print.size-58mm {
         width: 58mm !important;
         max-width: 58mm !important;
-        padding: 2mm 1.5mm !important;
-        font-size: 11.5px !important;
-        line-height: 1.35 !important;
+        padding: 3mm 2mm 8mm 2mm !important;
+        font-size: 11px !important;
+        line-height: 1.4 !important;
     }
-    .receipt-print.size-58mm h2 {
+    .receipt-print.size-58mm .receipt-store-title {
         font-size: 17px !important;
-        font-weight: 900 !important;
-        margin: 0 0 2px 0 !important;
+    }
+    .receipt-print.size-58mm .receipt-store-sub {
+        font-size: 12px !important;
+    }
+    .receipt-print.size-58mm .receipt-store-address,
+    .receipt-print.size-58mm .receipt-store-telp {
+        font-size: 10px !important;
     }
 
     /* Ukuran 80mm (Standar POS Kasir) */
     .receipt-print.size-80mm {
         width: 80mm !important;
         max-width: 80mm !important;
-        padding: 4mm 3mm !important;
-        font-size: 13.5px !important;
-        line-height: 1.4 !important;
+        padding: 5mm 3.5mm 10mm 3.5mm !important;
+        font-size: 13px !important;
+        line-height: 1.45 !important;
     }
-    .receipt-print.size-80mm h2 {
+    .receipt-print.size-80mm .receipt-store-title {
         font-size: 22px !important;
-        font-weight: 900 !important;
-        margin: 0 0 3px 0 !important;
+    }
+    .receipt-print.size-80mm .receipt-store-sub {
+        font-size: 13.5px !important;
+    }
+    .receipt-print.size-80mm .receipt-store-address,
+    .receipt-print.size-80mm .receipt-store-telp {
+        font-size: 11.5px !important;
     }
 
     /* Ukuran A4 / PDF (Besar & Jelas di Kertas Biasa / PDF) */
     .receipt-print.size-a4 {
         width: 140mm !important;
         max-width: 140mm !important;
-        padding: 8mm 6mm !important;
-        font-size: 15.5px !important;
+        padding: 8mm 6mm 12mm 6mm !important;
+        font-size: 15px !important;
         line-height: 1.5 !important;
         border: 1px dashed #000000 !important;
         border-radius: 6px !important;
         margin-top: 8mm !important;
     }
-    .receipt-print.size-a4 h2 {
+    .receipt-print.size-a4 .receipt-store-title {
         font-size: 26px !important;
-        font-weight: 900 !important;
-        margin: 0 0 4px 0 !important;
+    }
+    .receipt-print.size-a4 .receipt-store-sub {
+        font-size: 16px !important;
+    }
+    .receipt-print.size-a4 .receipt-store-address,
+    .receipt-print.size-a4 .receipt-store-telp {
+        font-size: 13.5px !important;
     }
 
     .receipt-print p {
